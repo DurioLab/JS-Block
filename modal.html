@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <style>
+        .modal-backdrop{
+            position: fixed;
+            left: 0;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            background-color: black;
+        }
+        .modal-backdrop.in{
+            opacity: 0.5;
+        }
+        .fade{
+            opacity: 0;
+            -webkit-transition: opacity .15s;
+            -moz-transition: opacity .15s;
+            -ms-transition: opacity .15s;
+            -o-transition: opacity .15s;
+            transition: opacity .15s;
+        }
+        .fade.in{
+            opacity: 0.5;
+        }
+
+    </style>
+</head>
+<body>
+
+    <button onclick="openModal()">弹出Modal</button>
+
+
+    <div id="modal">
+        <button onclick="closeModal()">关闭modal</button>
+    </div>
+
+    <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.js"></script>
+
+    <script>
+
+
+        var Modal = function (mId) {
+            this.$element = $(mId);
+            this.$body = $('body');
+        };
+
+        Modal.BACKDROP_TRANSITION_DURATION = 150;
+
+
+        Modal.prototype.backdrop = function (callback) {
+            var that = this;
+
+            if (this.isShow){
+
+                this.$backdrop = $(document.createElement('div'))
+                    .addClass('modal-backdrop fade')
+                    .appendTo(this.$body);
+
+                this.$backdrop[0].offsetWidth; // 强制回流 force reflow
+
+                this.$backdrop
+                    .one('bsTransitionEnd', callback)
+                    .emulateTransitionEnd(Modal.BACKDROP_TRANSITION_DURATION);
+
+                this.$backdrop.on('click', function () {
+                    closeModal();
+                });
+
+                this.$backdrop.addClass('in');
+            } else {
+
+                var callbackRemove = function () {
+                    that.$backdrop.remove();
+                    that.$backdrop = null;
+                    callback && callback()
+                };
+
+                this.$backdrop
+                    .one('bsTransitionEnd', callbackRemove)
+                    .emulateTransitionEnd(Modal.BACKDROP_TRANSITION_DURATION);
+
+                this.$backdrop.removeClass('in');
+
+            }
+
+
+
+        };
+
+        Modal.prototype.show = function () {
+            this.isShow = true;
+            this.backdrop(function (evt) {
+
+            });
+        };
+        Modal.prototype.hide = function () {
+            this.isShow = false;
+            this.backdrop(function () {
+
+            });
+        };
+
+
+
+
+        var modal;
+
+        function openModal() {
+            modal = new Modal('#modal');
+            modal.show();
+        }
+
+        function closeModal() {
+            modal.hide();
+        }
+
+
+        +function ($) {
+            'use strict';
+
+            // CSS TRANSITION SUPPORT (Shoutout: http://www.modernizr.com/)
+            // ============================================================
+
+            function transitionEnd() {
+                var el = document.createElement('bootstrap');
+
+                var transEndEventNames = {
+                    WebkitTransition : 'webkitTransitionEnd',
+                    MozTransition    : 'transitionend',
+                    OTransition      : 'oTransitionEnd otransitionend',
+                    transition       : 'transitionend'
+                };
+
+                for (var name in transEndEventNames) {
+                    if (el.style[name] !== undefined) {
+                        return { end: transEndEventNames[name] }
+                    }
+                }
+
+                return false // explicit for ie8 (  ._.)
+            }
+
+            // http://blog.alexmaccaw.com/css-transitions
+            $.fn.emulateTransitionEnd = function (duration) {
+                var called = false;
+                var $el = this;
+                $(this).one('bsTransitionEnd', function () { called = true });
+                var callback = function () { if (!called) $($el).trigger($.support.transition.end) };
+                setTimeout(callback, duration);
+                return this
+            };
+
+            $(function () {
+                $.support.transition = transitionEnd();
+
+                if (!$.support.transition) return;
+
+                // jQuery事件扩展
+                $.event.special.bsTransitionEnd = {
+                    bindType: $.support.transition.end,
+                    delegateType: $.support.transition.end,
+                    handle: function (e) {
+                        if ($(e.target).is(this)) return e.handleObj.handler.apply(this, arguments);  //执行回调函数
+                    }
+                };
+            })
+
+        }(jQuery);
+
+    </script>
+</body>
+</html>
