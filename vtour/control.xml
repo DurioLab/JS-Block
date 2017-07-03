@@ -1,0 +1,13 @@
+<krpano>
+
+		<plugin name="inputtest" keep="true" devices="html5"
+			url="panel.js"
+			align="leftop" 
+			x="50" 
+			y="50"
+			width="400"
+			height="20"
+			text=""
+			onchanged="txtadd(plugin[output].html, 'Entered text: ', get(text));"/>
+
+</krpano>

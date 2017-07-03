@@ -1,0 +1,198 @@
+﻿<krpano version="1.19" onstart="bootstrap();" title="汽车之家">
+
+	<include url="skin/vtourskin.xml" />
+
+
+	<!-- customize skin settings: maps, gyro, webvr, thumbnails, tooltips, layout, design, ... -->
+	<skin_settings maps="false"
+				   maps_type="google"
+				   maps_bing_api_key=""
+				   maps_google_api_key=""
+				   maps_zoombuttons="false"
+				   gyro="true"
+				   webvr="true"
+				   webvr_gyro_keeplookingdirection="false"
+				   webvr_prev_next_hotspots="true"
+				   littleplanetintro="false"
+				   title="true"
+				   thumbs="true"
+				   thumbs_width="120" thumbs_height="80" thumbs_padding="10" thumbs_crop="0|40|240|160"
+				   thumbs_opened="false"
+				   thumbs_text="false"
+				   thumbs_dragging="true"
+				   thumbs_onhoverscrolling="false"
+				   thumbs_scrollbuttons="false"
+				   thumbs_scrollindicator="false"
+				   thumbs_loop="false"
+				   tooltips_buttons="false"
+				   tooltips_thumbs="false"
+				   tooltips_hotspots="true"
+				   tooltips_mapspots="false"
+				   deeplinking="false"
+				   loadscene_flags="MERGE"
+				   loadscene_blend="OPENBLEND(0.5, 0.0, 0.75, 0.05, linear)"
+				   loadscene_blend_prev="SLIDEBLEND(0.5, 180, 0.75, linear)"
+				   loadscene_blend_next="SLIDEBLEND(0.5,   0, 0.75, linear)"
+				   loadingtext="图片加载中..."
+				   layout_width="100%"
+				   layout_maxwidth="814"
+				   controlbar_width="-24"
+				   controlbar_height="40"
+				   controlbar_offset="20"
+				   controlbar_offset_closed="-40"
+				   controlbar_overlap.no-fractionalscaling="10"
+				   controlbar_overlap.fractionalscaling="0"
+				   design_skin_images="vtourskin.png"
+				   design_bgcolor="0x2D3E50"
+				   design_bgalpha="0.8"
+				   design_bgborder="0"
+				   design_bgroundedge="1"
+				   design_bgshadow="0 4 10 0x000000 0.3"
+				   design_thumbborder_bgborder="3 0xFFFFFF 1.0"
+				   design_thumbborder_padding="2"
+				   design_thumbborder_bgroundedge="0"
+				   design_text_css="color:#FFFFFF; font-family:Arial;"
+				   design_text_shadow="1"
+	/>
+
+	<!--
+	    For an alternative skin design either change the <skin_settings> values 
+	    from above or optionally include one of the predefined designs from below.
+	-->
+	<!-- <include url="skin/vtourskin_design_flat_light.xml"  /> -->
+	<!-- <include url="skin/vtourskin_design_glass.xml"       /> -->
+	<!-- <include url="skin/vtourskin_design_ultra_light.xml" /> -->
+	<!-- <include url="skin/vtourskin_design_117.xml"         /> -->
+	<!-- <include url="skin/vtourskin_design_117round.xml"    /> -->
+	<!-- <include url="skin/vtourskin_design_black.xml"       /> -->
+
+
+	<action name="bootstrap">
+		trace('action1', %0, %1);
+		if(startscene === null || !scene[get(startscene)], copy(startscene,scene[0].name); );
+		loadscene(get(startscene), null, MERGE);
+		if(startactions !== null, startactions() );
+	</action>
+
+
+
+
+
+	<!-- startup action - load the first scene -->
+	<!--<action name="startup" autorun="onstart">-->
+
+		<!--action1(1);-->
+
+	<!--</action>-->
+	<!--<area mode="border" top="10" bottom="10" />-->
+	<autorotate enabled="true"
+				waittime="1.5"
+				speed="10.0"
+	/>
+
+
+	<scene name="scene_2020302_1" title="第一个页面" onstart="" thumburl="panos/2020302_1.tiles/thumb.jpg" lat="" lng="" heading="">
+
+		<view hlookat="0.0" vlookat="0.0" fovtype="MFOV" fov="120" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/2020302_1.tiles/preview.jpg" />
+
+
+		<image>
+			<cube url="panos/2020302_1.tiles/pano_%s.jpg" />
+		</image>
+
+		<!-- 		<hotspot name="spot1" style="skin_hotspotstyle" ath="-33.637" atv="7.759" linkedscene="scene_2020302_1" />
+         -->
+
+		<hotspot name="spot2" url="skin/explosion.png" onloaded="do_crop_animation(100,100, 60)" ath="-33.637" atv="7.759" linkedscene="scene_2020302_1" onclick="skin_hotspotstyle_click();"/>
+
+
+		<hotspot name="iframelayer"
+				 ath="0" atv="0"
+				 distorted="true"
+				 renderer="css3d"
+				 onloaded="delayedcall(0,add_iframe('https://www.baidu.com', 640, 360));"
+		/>
+
+
+		<hotspot name="demospot" url="http://img1.bitautoimg.com/autoalbum/files/20170510/404/20063040413101_5472692_3.JPG" width="100" height="60" ath="40" atv="-1" visible="true" zoom="true"/>
+
+
+
+		<!--<layer name="logo"-->
+			   <!--url="panos/2020302_1.tiles/preview.jpg"-->
+			   <!--align="rightbottom" x="20" y="20"-->
+			   <!--onclick="openurl('http://...');"-->
+		<!--/>-->
+
+	</scene>
+
+	<security cors="">
+		<!--<crossdomainxml url="http://.../crossdomain.xml" />-->
+		<allowdomain domain="ss0.bdstatic.com" />
+	</security>
+
+	<action name="do_crop_animation">
+		<!-- 为热点注册属性 -->
+		registerattribute(xframes, calc((imagewidth / %1) BOR 0));
+		registerattribute(yframes, calc((imageheight / %2) BOR 0));
+		registerattribute(frames, calc(xframes * yframes));
+		registerattribute(frame, 0);
+
+		set(crop, '0|0|%1|%2');
+
+		setinterval(calc('crop_anim_' + name), calc(1.0 / %3),
+		if(loaded,
+		inc(frame);
+		if(frame GE frames, if(onlastframe !== null, onlastframe() ); set(frame,0); );
+		mod(xpos, frame, xframes);
+		div(ypos, frame, xframes);
+		Math.floor(ypos);
+		mul(xpos, %1);
+		mul(ypos, %2);
+		calc(crop, xpos + '|' + ypos + '|%1|%2');
+		,
+		clearinterval(calc('crop_anim_' + name));
+		);
+		);
+	</action>
+
+	<action name="skin_hotspotstyle_click">
+		if(linkedscene,
+			if(linkedscene_lookat,
+				txtsplit(linkedscene_lookat, ',', hs_lookat_h, hs_lookat_v, hs_lookat_fov);
+			);
+			set(enabled, false);
+			skin_hidetooltips();
+			tween(depth|alpha|oy|rx, 4000|0.0|-50|-60, 0.5, default, skin_loadscene(get(linkedscene), get(skin_settings.loadscene_blend));
+				
+			if(hs_lookat_h !== null,
+				skin_lookat(get(hs_lookat_h), get(hs_lookat_v), get(hs_lookat_fov));
+				delete(hs_lookat_h, hs_lookat_v, hs_lookat_fov);
+			);
+			skin_updatescroll();
+			);
+		);
+	</action>
+
+
+	<action name="add_iframe" type="Javascript">
+		var iframe = document.createElement("iframe");
+		iframe.style.position = "absolute";
+		iframe.style.left = 0;
+		iframe.style.top = 0;
+		iframe.style.width = "100%";
+		iframe.style.height = "100%";
+		iframe.style.border = 0;
+		iframe.src = args[1];
+		iframe.setAttribute('id',resolve(caller.name));
+		caller.registercontentsize(args[2], args[3]);
+		caller.sprite.appendChild(iframe);
+		caller.sprite.style.webkitOverflowScrolling = "touch";
+		caller.sprite.style.overflowY = "auto";
+		caller.sprite.style.overflowX = "auto";
+	</action>
+
+
+</krpano>

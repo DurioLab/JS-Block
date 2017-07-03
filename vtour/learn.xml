@@ -1,0 +1,193 @@
+<krpano version="1.19" onstart="bootstrap();" title="汽车之家"> <!--根标记 onstart: 启动  bootstrap: 启动action-->
+
+	
+	<include url="value.xml" />
+	<include url="control.xml" />
+
+
+	<!-- action可以执行代码 -->
+	<!-- <action name="bootstrap" type="Javascript">
+		krpano.call('loadscene(get(scene[0].name), null, MERGE)');
+	</action> -->
+
+	<action name="bootstrap">
+		loadscene('scene_2020302_1', null, MERGE);
+
+		set(i, 100);
+
+		calc_test(calc(array[cart99].sub[item0].product));
+
+	</action>
+
+	<action name="calc_test" type="Javascript">
+
+		console.log(args);
+	</action>
+
+
+
+	<scene name="scene_2020302_1" title="第一个页面" onstart="scene_start('scene_2020302_1')" thumburl="panos/2020302_1.tiles/thumb.jpg" lat="" lng="" heading="">
+		<view hlookat="0.0" vlookat="0.0" fovtype="MFOV" fov="120" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+		<preview url="panos/2020302_1.tiles/preview.jpg" />
+		<image>
+			<cube url="panos/2020302_1.tiles/pano_%s.jpg" />
+		</image>
+
+
+
+		<!-- use renderer=css3d for hotspots with html content    distorted: 是否随着3d空间扭曲-->
+		<!-- <hotspot url="black.png"
+		         ath="0" 
+		         atv="0"
+		         distorted="true" 
+		         renderer="css3d"
+		         scale="1"
+		         alpha="1"
+		         onclick="hotspot_click()"
+		         linkedscene="scene_2020302_2"
+		         onloaded="add_iframe('https://www.youtube.com/embed/p4j18C0CEEg', 640, 360);"
+		         /> -->
+		<action name="commom_layer" autorun="preinit">
+				addlayer(button);
+				set(layer[button].url, 'panos/2020302_1.tiles/thumb.jpg');
+				set(layer[button].align,rightbottom);
+				set(layer[button].x,10);
+				set(layer[button].y,20);
+				set(layer[button].name, button);
+		</action>
+
+
+	</scene>
+
+
+
+
+
+	<scene name="scene_2020302_2" title="第二个页面" onstart="scene_start('scene_2020302_2')" thumburl="panos/2020302_2.tiles/thumb.jpg" lat="" lng="" heading="">
+		
+		<view hlookat="0.0" vlookat="0.0" fovtype="MFOV" fov="120" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+		<preview url="panos/2020302_2.tiles/preview.jpg" />
+		<image>
+			<cube url="panos/2020302_2.tiles/pano_%s.jpg" />
+		</image>
+	</scene>
+
+
+
+
+
+	<action name="add_iframe" type="Javascript">
+
+		var iframe = document.createElement("div");
+		iframe.style.position = "absolute";
+		iframe.style.left = 0;
+		iframe.style.top = 0;
+		iframe.style.width = "100%";
+		iframe.style.height = "100%";
+		iframe.style.border = 0;
+		iframe.style.backgroundColor = 'black';
+		iframe.onclick = function(){
+
+		}
+
+
+		var button = document.createElement("button");
+		button.innerHTML = "点击我";
+		iframe.a
+
+
+
+
+
+		//iframe.src = args[1];
+		caller.registercontentsize(args[2], args[3]);
+		caller.sprite.appendChild(iframe);
+	</action>
+
+
+	<action name="create_div" type="Javascript">
+
+		console.log(args[1][0].name);
+
+	</action>
+
+
+
+
+
+	<action name="scene_start">
+
+
+		jsget(markdata, calc('window.markData["%1"]') );
+		jsget(marklength, calc('window.markData["%1"].length') );
+
+		for(set(i,0), i LT array[%1].sub.count, inc(i), trace(array[%1].sub[calc('mark_' + (i + 1))].url););
+
+		trace(array[cart99].sub[item0].product);
+		trace('数组');
+		trace(array[%1].sub[mark_1].url);
+
+		
+
+
+		for(set(i,0), i LT marklength, inc(i), jsget( nameme , calc('window.markData["%1"][' + i + '].name'));trace(nameme));
+
+
+		trace(1);
+
+
+		
+		set(mark1,  %1 + '_mark');
+		addhotspot(mark1);
+		set(hotspot[mark1].url,black.png);
+		set(hotspot[mark1].ath,100);
+		set(hotspot[mark1].atv,100);
+		set(hotspot[mark1].distorted, true);
+		set(hotspot[mark1].renderer, css3d);
+		set(hotspot[mark1].onclick, hotspot_click('scene_2020302_2'));
+		set(hotspot[mark1].onloaded, add_iframe('https://www.youtube.com/embed/p4j18C0CEEg', 640, 360) );
+
+
+
+	</action>
+
+
+	<action name="hotspot_click">
+
+		def(b, boolean, true);
+		set(b, false);
+		trace(get(b));
+		trace(calc(100 - 20));
+
+		if(get(b) === false, trace('b is false'), trace('b is true'));
+
+
+		//loadpano('auto.xml', null, MERGE, BLEND(1));
+
+		loadscene(%1,null,MERGE, BLEND(1))
+		
+		trace(%1);
+
+		if(linkedscene,
+			trace(linkedscene);
+			trace(get(linkedscene_lookat));
+		)
+
+	</action>
+
+
+
+
+	<!-- 加载场景 skin_loadscene(scenenameorindex, blendmode) -->
+	<action name="skin_loadscene">
+		if(webvr.isenabled AND scene.count GT 1,
+			set(hotspot[webvr_prev_scene].visible, false);
+			set(hotspot[webvr_next_scene].visible, false);
+		);
+
+		txtadd(layer[skin_thumbborder].parent, 'skin_thumb_', get(scene[%1].index));
+		layer[skin_thumbs].scrolltocenter(get(scene[%1].thumbx), get(scene[%1].thumby));
+		loadscene(get(scene[%1].name), null, get(skin_settings.loadscene_flags), %2);
+	</action>
+
+</krpano>

@@ -1,0 +1,32 @@
+<krpano>
+
+	<array name="cart99"> 
+		<sub name="item0" product="product1" color="red" url="123" />
+		<sub name="item1" product="product2" color="blue" url="231" />
+		<sub name="item2" product="product3" color="green" url="321" />
+	</array>
+
+	<array name="scene_2020302_1"> 
+		<sub name="mark_1" product="product1" color="red" url="123" />
+		<sub name="mark_2" product="product2" color="blue" url="231" />
+		<sub name="mark_3" product="product3" color="green" url="321" />
+	</array>
+
+
+
+
+	<action name="markData" autorun="preinit" type="Javascript">
+		window.markData = {
+			scene_2020302_1:[
+				{
+					name:'mark1',
+					link:'xxxx'
+				},
+								{
+					name:'mark2',
+					link:'xxxx'
+				}
+			]
+		}
+	</action>	
+</krpano>

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<style type="text/css">
+		body{
+			margin:0;
+			padding: 0;
+		}
+		ul{
+			margin: 0;
+			padding: 0;
+		}
+		.question-container{
+			width: 100%;
+			margin-top: 500px;
+		}
+		.current-question-wrapper{
+			height: 200px;
+			background-color: red;
+			position: relative;
+		}
+	</style>
+</head>
+<body>
+
+<div class="question-container">
+	<div class="current-question-wrapper">
+	</div>
+</div>
+
+<script src="https://cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
+<script type="text/javascript">
+
+	var suspendElem = null;
+
+	var questions = [
+		{
+			title: '问题1'
+		},
+		{
+			title: '问题2'
+		},
+		{
+			title: '问题3'
+		},
+		{
+			title: '问题4'
+		},
+		{
+			title: '问题5'
+		}
+	]
+
+	var currentIndex = 0;
+
+	function initQuestion(){
+		$('.current-question-wrapper').append('<div class="current-question" data-index="' + currentIndex + '"><ul><li>' + questions[currentIndex].title +'</li><li>' + questions[currentIndex].title +'</li><li>' + questions[currentIndex].title +'</li></ul></div>');
+	}
+
+	initQuestion();
+	animateLoop();
+
+	// animateLoop();
+
+	function animateLoop(){
+
+		// qt-suspend 悬浮
+
+		// qt-normal 正常
+
+
+
+		$('.current-question').on('click.current', function(){
+
+			if (currentIndex >= questions.length - 1) { return }
+
+			currentIndex += 1;
+
+			var that = $(this);
+
+			if (suspendElem) {
+				suspendElem.animate({
+					top: parseFloat(suspendElem.css('top')) - 100
+				}, 500, function(){
+					$(this).off('click.suspend').remove();
+				})
+			}
+
+			suspendElem = $(this).clone();
+			suspendElem.appendTo($(this).parent());
+			suspendElem.on('click.suspend', function(){
+
+				// 当前悬浮的是第二个问题 创建
+
+				that.css({
+					position: 'absolute'
+				}).animate({right: -30},500, function(){
+					$(this).off('click.current').remove();
+				})
+
+				$(this).animate({top: 0}, 500, function(){
+					$(this).off('click.suspend');
+					$(this).css({
+						position:'relative'
+					});
+					suspendElem = null;
+					animateLoop();
+				});
+			});
+
+			$(this).data('index',currentIndex).empty().append($('<ul><li>' + questions[currentIndex].title  + '</li><li>' + questions[currentIndex].title +'</li><li> ' + questions[currentIndex].title +'</li></ul>') );
+ 
+			suspendElem.css({
+				position: 'absolute',
+				top: 0
+			}).animate({top: -550},500);
+			
+		});
+	}
+</script>
+</body>
+</html>
